@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Guard::Santorini::VERSION
   s.authors     = ["Andrei Maxim"]
   s.email       = ["andrei@andreimaxim.ro"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.homepage    = "https://github.com/xhr/guard-santorini"
+  s.summary     = "Guard for running Rails tests"
+  s.description = "Guard plug-in that allows you to run Rails tests automatically"
 
   s.rubyforge_project = "guard-santorini"
 
