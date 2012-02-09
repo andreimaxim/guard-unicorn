@@ -1,4 +1,4 @@
-# Guard::Santorini [![Build Status](https://secure.travis-ci.org/xhr/guard-santorini.png)](http://travis-ci.org/xhr/guard-santorini)
+# Guard::Santorini [![Build Status](https://secure.travis-ci.org/xhr/guard-santorini.png)](http://travis-ci.org/#!/xhr/guard-santorini)
 
 `Guard::Santorini` automatically runs all your Rails tests using [Guard] [gu]. 
 It is similar to [guard-test] [gt] except that it is supposed to work out of
