@@ -1,5 +1,3 @@
-require 'guard'
-
 module Guard
   module SantoriniVersion
     VERSION = "0.0.1"
