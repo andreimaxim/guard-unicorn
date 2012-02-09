@@ -1,5 +1,7 @@
+require 'guard'
+
 module Guard
-  module Santorini
+  module SantoriniVersion
     VERSION = "0.0.1"
   end
 end
