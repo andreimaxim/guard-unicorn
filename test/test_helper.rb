@@ -10,4 +10,4 @@ end
 
 require 'minitest/autorun'
 
-require 'guard/santorini'
+require 'guard/unicorn'

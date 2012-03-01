@@ -1,10 +1,10 @@
 require 'guard'
 require 'guard/guard'
 
-require 'guard/santorini/version'
+require 'guard/unicorn/version'
 
 module Guard
-  class Santorini < Guard
+  class Unicorn < Guard
 
     # Initialize a Guard.
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers

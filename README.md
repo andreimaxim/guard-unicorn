@@ -1,33 +1,30 @@
-# Guard::Santorini [![Build Status](https://secure.travis-ci.org/xhr/guard-santorini.png)](http://travis-ci.org/#!/xhr/guard-santorini)
+# Guard::Unicorn [![Build Status](https://secure.travis-ci.org/xhr/guard-unicorn.png)](http://travis-ci.org/#!/xhr/guard-unicorn)
 
-`Guard::Santorini` automatically runs all your Rails tests using [Guard] [gu]. 
-It is similar to [guard-test] [gt] except that it is supposed to work out of
-the box with older Rails-based applications.
+`Guard::Unicorn` automatically restarts the Unicorn server using [Guard] [gu].
 
 [gu]: https://github.com/guard/guard
-[gt]: https://github.com/guard/guard-test
 
 
 ## Installation
 
 Using Rubygems:
 
-    $ gem install guard-santorini
+    $ gem install guard-unicorn
 
 Using Bundler, add this to your `Gemfile`, preferably in the `development` group:
 
 ```ruby
 group :development
-  gem 'guard-santorini'
+  gem 'guard-unicorn'
 end
 ```
 
 Add a sample Guard definition to your `Guardfile`:
 
-    $ guard init santorini
+    $ guard init unicorn
 
 
-## Usage
+## Guard General Usage
 
 Please read the [guard usage doc] [gd] in order to find out more about Guard and 
 how to use Guards. There is also [a Railscast about Guard] [gc], created by Ryan
@@ -47,4 +44,6 @@ to have graphical notifications.
 
 ## Guardfile
 
-TBD
+```ruby
+guard :unicorn, :daemonized => true, :config_file => "config/unicorn.rb", :pid_file => "tmp/pids/unicorn.pid"
+```
