@@ -4,7 +4,7 @@ require "guard/unicorn/version"
 
 Gem::Specification.new do |s|
   s.name        = "guard-unicorn"
-  s.version     = Guard::Unicorn::VERSION
+  s.version     = Guard::UnicornVersion::VERSION
   s.authors     = ["Andrei Maxim"]
   s.email       = ["andrei@andreimaxim.ro"]
   s.homepage    = "https://github.com/xhr/guard-unicorn"
