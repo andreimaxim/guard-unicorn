@@ -86,6 +86,8 @@ module Guard
     end
 
     def stop_unicorn
+      return unless pid
+
       Process.kill("QUIT", pid) if Process.getpgid(pid) 
     end
 
