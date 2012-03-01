@@ -10,23 +10,40 @@ module Guard
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers
     # @param [Hash] options the custom Guard options
     def initialize(watchers = [], options = {})
+      if watchers.empty?
+        watchers << Watcher.new( /^app\/(controllers|models|helpers)\/.+\.rb$/ )
+        watchers << Watcher.new( /^lib\/.+\.rb$/ )
+      end
+
+      @run_as_daemon = options.fetch(:daemonize, false)
+
+      @pid_path    = File.join("tmp", "pids", "unicorn.pid")
+      @config_path = File.join("config", "unicorn.rb")
+
       super
     end
 
     # Call once when Guard starts. Please override initialize method to init stuff.
     # @raise [:task_has_failed] when start has failed
     def start
+      info "Starting Unicorn..."
+
+      start_unicorn
     end
 
     # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
     # @raise [:task_has_failed] when stop has failed
     def stop
+      info "Stopping everything"
+      stop_unicorn
     end
 
     # Called when `reload|r|z + enter` is pressed.
     # This method should be mainly used for "reload" (really!) actions like reloading passenger/spork/bundler/...
     # @raise [:task_has_failed] when reload has failed
     def reload
+      info "Stopping everything"
+      restart_unicorn
     end
 
     # Called when just `enter` is pressed
@@ -39,6 +56,7 @@ module Guard
     # @param [Array<String>] paths the changes files or paths
     # @raise [:task_has_failed] when run_on_change has failed
     def run_on_change(paths)
+      restart_unicorn
     end
 
     # Called on file(s) deletions that the Guard watches.
@@ -47,5 +65,44 @@ module Guard
     def run_on_deletion(paths)
     end
 
+    private
+    def start_unicorn
+      # Make sure unicorn is stopped
+      stop_unicorn
+
+      cmd = [] 
+      cmd << "unicorn_rails"
+      cmd << "-c #{@config_path}"
+      cmd << "-D" if daemonize? 
+
+      @pid = Process.fork do
+        system "#{cmd.join " "}"
+        info "Unicorn started."
+      end
+    end
+
+    def restart_unicorn
+      Process.kill "HUP", pid
+    end
+
+    def stop_unicorn
+      Process.kill("QUIT", pid) if Process.getpgid(pid) 
+    end
+
+    def pid
+      return @pid if @pid
+
+      if File.exists?(@pid_path)
+        @pid = File.open(@pid_path) { |f| f.gets.to_i } 
+      end
+    end
+
+    def info(msg)
+      UI.info(msg)
+    end
+
+    def daemonize?
+      @run_as_daemon
+    end
   end
 end
