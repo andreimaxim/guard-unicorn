@@ -27,14 +27,13 @@ module Guard
     # @raise [:task_has_failed] when start has failed
     def start
       info "Starting Unicorn..."
-
       start_unicorn
     end
 
     # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
     # @raise [:task_has_failed] when stop has failed
     def stop
-      info "Stopping everything"
+      info "Stopping Unicorn"
       stop_unicorn
     end
 
@@ -42,7 +41,7 @@ module Guard
     # This method should be mainly used for "reload" (really!) actions like reloading passenger/spork/bundler/...
     # @raise [:task_has_failed] when reload has failed
     def reload
-      info "Stopping everything"
+      info "Reloading Unicorn"
       restart_unicorn
     end
 
@@ -88,15 +87,26 @@ module Guard
     def stop_unicorn
       return unless pid
 
-      Process.kill("QUIT", pid) if Process.getpgid(pid) 
+      begin
+        Process.kill("QUIT", pid) if Process.getpgid(pid) 
+
+        # Unicorn won't always shut down right away, so we're waiting for
+        # the getpgid method to raise an Errno::ESRCH that will tell us
+        # the process is not longer active.
+        sleep 1 while Process.getpgid(pid)
+      rescue Errno::ESRCH
+        # Don't do anything, the process does not exist
+      end
     end
 
     def pid
-      return @pid if @pid
-
+      # Favor the pid in the pidfile, since some processes
+      # might daemonize properly and fork twice.
       if File.exists?(@pid_path)
         @pid = File.open(@pid_path) { |f| f.gets.to_i } 
       end
+
+      @pid
     end
 
     def info(msg)
