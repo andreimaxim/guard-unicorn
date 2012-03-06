@@ -15,7 +15,8 @@ module Guard
         watchers << Watcher.new( /^lib\/.+\.rb$/ )
       end
 
-      @run_as_daemon = options.fetch(:daemonize, false)
+      @run_as_daemon  = options.fetch(:daemonize, false)
+      @enable_bundler = options.fetch(:bundler, true) 
 
       @pid_path    = File.join("tmp", "pids", "unicorn.pid")
       @config_path = File.join("config", "unicorn.rb")
@@ -26,23 +27,23 @@ module Guard
     # Call once when Guard starts. Please override initialize method to init stuff.
     # @raise [:task_has_failed] when start has failed
     def start
-      info "Starting Unicorn..."
       start_unicorn
+      success "Unicorn started"
     end
 
     # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
     # @raise [:task_has_failed] when stop has failed
     def stop
-      info "Stopping Unicorn"
       stop_unicorn
+      success "Unicorn stopped"
     end
 
     # Called when `reload|r|z + enter` is pressed.
     # This method should be mainly used for "reload" (really!) actions like reloading passenger/spork/bundler/...
     # @raise [:task_has_failed] when reload has failed
     def reload
-      info "Reloading Unicorn"
       restart_unicorn
+      success "Unicorn reloaded"
     end
 
     # Called when just `enter` is pressed
@@ -56,6 +57,7 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     def run_on_change(paths)
       restart_unicorn
+      success "Unicorn reloaded"
     end
 
     # Called on file(s) deletions that the Guard watches.
@@ -70,6 +72,7 @@ module Guard
       stop_unicorn
 
       cmd = [] 
+      cmd << "bundle exec" if use_bundler?
       cmd << "unicorn_rails"
       cmd << "-c #{@config_path}"
       cmd << "-D" if daemonize? 
@@ -113,8 +116,28 @@ module Guard
       UI.info(msg)
     end
 
+    def pending message
+      notify message, :image => :pending
+    end
+
+    def success message
+      notify message, :image => :success
+    end
+
+    def failed message
+      notify message, :image => :failed
+    end
+
+    def notify(message, options = {})
+      Notifier.notify(message, options)
+    end
+
     def daemonize?
       @run_as_daemon
+    end
+
+    def use_bundler?
+      @enable_bundler
     end
   end
 end
