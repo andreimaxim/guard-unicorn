@@ -17,9 +17,12 @@ module Guard
 
       @run_as_daemon  = options.fetch(:daemonize, false)
       @enable_bundler = options.fetch(:bundler, true) 
+      @config_file    = options.fetch(:config_file, File.join("config", "unicorn.rb"))
+      @pid_file       = options.fetch(:pid_file, File.join("tmp", "pids", "unicorn.pid"))
 
-      @pid_path    = File.join("tmp", "pids", "unicorn.pid")
-      @config_path = File.join("config", "unicorn.rb")
+      if File.exist? @config_file
+        @config_path = @config_file
+      end
 
       super
     end
@@ -28,7 +31,6 @@ module Guard
     # @raise [:task_has_failed] when start has failed
     def start
       start_unicorn
-      success "Unicorn started"
     end
 
     # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
@@ -74,12 +76,12 @@ module Guard
       cmd = [] 
       cmd << "bundle exec" if use_bundler?
       cmd << "unicorn_rails"
-      cmd << "-c #{@config_path}"
+      cmd << "-c #{@config_path}" if use_config_file?
       cmd << "-D" if daemonize? 
 
       @pid = Process.fork do
         system "#{cmd.join " "}"
-        info "Unicorn started."
+        success "Unicorn started."
       end
     end
 
@@ -105,8 +107,8 @@ module Guard
     def pid
       # Favor the pid in the pidfile, since some processes
       # might daemonize properly and fork twice.
-      if File.exists?(@pid_path)
-        @pid = File.open(@pid_path) { |f| f.gets.to_i } 
+      if File.exists?(@pid_file)
+        @pid = File.open(@pid_file) { |f| f.gets.to_i } 
       end
 
       @pid
@@ -138,6 +140,10 @@ module Guard
 
     def use_bundler?
       @enable_bundler
+    end
+
+    def use_config_file?
+      File.exist? @config_path
     end
   end
 end
