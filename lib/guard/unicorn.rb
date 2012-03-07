@@ -30,21 +30,46 @@ module Guard
     # Call once when Guard starts. Please override initialize method to init stuff.
     # @raise [:task_has_failed] when start has failed
     def start
-      start_unicorn
+      # Make sure unicorn is stopped
+      stop
+
+      cmd = [] 
+      cmd << "bundle exec" if use_bundler?
+      cmd << "unicorn_rails"
+      cmd << "-c #{@config_path}" if use_config_file?
+      cmd << "-D" if daemonize? 
+
+      @pid = Process.fork do
+        system "#{cmd.join " "}"
+      end
+
+      success "Unicorn started."
     end
 
     # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
     # @raise [:task_has_failed] when stop has failed
     def stop
-      stop_unicorn
-      success "Unicorn stopped"
+      return unless pid
+
+      begin
+        Process.kill("QUIT", pid) if Process.getpgid(pid) 
+
+        # Unicorn won't always shut down right away, so we're waiting for
+        # the getpgid method to raise an Errno::ESRCH that will tell us
+        # the process is not longer active.
+        sleep 1 while Process.getpgid(pid)
+        success "Unicorn stopped."
+      rescue Errno::ESRCH
+        # Don't do anything, the process does not exist
+      end
     end
 
     # Called when `reload|r|z + enter` is pressed.
     # This method should be mainly used for "reload" (really!) actions like reloading passenger/spork/bundler/...
     # @raise [:task_has_failed] when reload has failed
     def reload
-      restart_unicorn
+      Process.kill "HUP", pid
+
       success "Unicorn reloaded"
     end
 
@@ -58,52 +83,17 @@ module Guard
     # @param [Array<String>] paths the changes files or paths
     # @raise [:task_has_failed] when run_on_change has failed
     def run_on_change(paths)
-      restart_unicorn
-      success "Unicorn reloaded"
+      reload
     end
 
     # Called on file(s) deletions that the Guard watches.
     # @param [Array<String>] paths the deleted files or paths
     # @raise [:task_has_failed] when run_on_change has failed
     def run_on_deletion(paths)
+      reload
     end
 
     private
-    def start_unicorn
-      # Make sure unicorn is stopped
-      stop_unicorn
-
-      cmd = [] 
-      cmd << "bundle exec" if use_bundler?
-      cmd << "unicorn_rails"
-      cmd << "-c #{@config_path}" if use_config_file?
-      cmd << "-D" if daemonize? 
-
-      @pid = Process.fork do
-        system "#{cmd.join " "}"
-        success "Unicorn started."
-      end
-    end
-
-    def restart_unicorn
-      Process.kill "HUP", pid
-    end
-
-    def stop_unicorn
-      return unless pid
-
-      begin
-        Process.kill("QUIT", pid) if Process.getpgid(pid) 
-
-        # Unicorn won't always shut down right away, so we're waiting for
-        # the getpgid method to raise an Errno::ESRCH that will tell us
-        # the process is not longer active.
-        sleep 1 while Process.getpgid(pid)
-      rescue Errno::ESRCH
-        # Don't do anything, the process does not exist
-      end
-    end
-
     def pid
       # Favor the pid in the pidfile, since some processes
       # might daemonize properly and fork twice.
