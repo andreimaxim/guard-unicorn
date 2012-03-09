@@ -17,12 +17,8 @@ module Guard
 
       @run_as_daemon  = options.fetch(:daemonize, false)
       @enable_bundler = options.fetch(:bundler, true) 
-      @config_file    = options.fetch(:config_file, File.join("config", "unicorn.rb"))
-      @pid_file       = options.fetch(:pid_file, File.join("tmp", "pids", "unicorn.pid"))
-
-      if File.exist? @config_file
-        @config_path = @config_file
-      end
+      @pid_path    = options.fetch(:pid_file) || File.join("tmp", "pids", "unicorn.pid")
+      @config_path = options.fetch(:config_file) || File.join("config", "unicorn.rb")
 
       super
     end
@@ -34,10 +30,10 @@ module Guard
       stop
 
       cmd = [] 
-      cmd << "bundle exec" if use_bundler?
+      cmd << "bundle exec" if @enable_bundler
       cmd << "unicorn_rails"
-      cmd << "-c #{@config_path}" if use_config_file?
-      cmd << "-D" if daemonize? 
+      cmd << "-c #{@config_path}"
+      cmd << "-D" if @run_as_daemon 
 
       @pid = Process.fork do
         system "#{cmd.join " "}"
@@ -122,18 +118,6 @@ module Guard
 
     def notify(message, options = {})
       Notifier.notify(message, options)
-    end
-
-    def daemonize?
-      @run_as_daemon
-    end
-
-    def use_bundler?
-      @enable_bundler
-    end
-
-    def use_config_file?
-      File.exist? @config_path
     end
   end
 end
