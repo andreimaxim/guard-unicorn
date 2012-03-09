@@ -6,6 +6,10 @@ require 'guard/unicorn/version'
 module Guard
   class Unicorn < Guard
 
+    # Sensible defaults for Rails projects
+    DEFAULT_PID_PATH    = File.join("tmp", "pids", "unicorn.pid")
+    DEFAULT_CONFIG_PATH = File.join("config", "unicorn.rb")
+
     # Initialize a Guard.
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers
     # @param [Hash] options the custom Guard options
@@ -17,8 +21,8 @@ module Guard
 
       @run_as_daemon  = options.fetch(:daemonize, false)
       @enable_bundler = options.fetch(:bundler, true) 
-      @pid_path    = options.fetch(:pid_file) || File.join("tmp", "pids", "unicorn.pid")
-      @config_path = options.fetch(:config_file) || File.join("config", "unicorn.rb")
+      @pid_file       = options.fetch(:pid_file, DEFAULT_PID_PATH)
+      @config_file    = options.fetch(:config_file, DEFAULT_CONFIG_PATH)
 
       super
     end
@@ -32,7 +36,7 @@ module Guard
       cmd = [] 
       cmd << "bundle exec" if @enable_bundler
       cmd << "unicorn_rails"
-      cmd << "-c #{@config_path}"
+      cmd << "-c #{@config_file}"
       cmd << "-D" if @run_as_daemon 
 
       @pid = Process.fork do
