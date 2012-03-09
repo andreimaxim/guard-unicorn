@@ -17,8 +17,8 @@ module Guard
 
       @run_as_daemon = options.fetch(:daemonize, false)
 
-      @pid_path    = File.join("tmp", "pids", "unicorn.pid")
-      @config_path = File.join("config", "unicorn.rb")
+      @pid_path    = options.fetch(:pid_file) || File.join("tmp", "pids", "unicorn.pid")
+      @config_path = options.fetch(:config_file) || File.join("config", "unicorn.rb")
 
       super
     end
