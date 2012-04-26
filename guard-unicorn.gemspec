@@ -1,10 +1,9 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "guard/unicorn/version"
 
 Gem::Specification.new do |s|
   s.name        = "guard-unicorn"
-  s.version     = Guard::UnicornVersion::VERSION
+  s.version     = "0.0.5"
   s.authors     = ["Andrei Maxim"]
   s.email       = ["andrei@andreimaxim.ro"]
   s.homepage    = "https://github.com/xhr/guard-unicorn"
