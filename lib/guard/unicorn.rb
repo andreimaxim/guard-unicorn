@@ -1,8 +1,6 @@
 require 'guard'
 require 'guard/guard'
 
-require 'guard/unicorn/version'
-
 module Guard
   class Unicorn < Guard
 
