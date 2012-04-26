@@ -23,6 +23,7 @@ module Guard
       @enable_bundler = options.fetch(:bundler, true) 
       @pid_file       = options.fetch(:pid_file, DEFAULT_PID_PATH)
       @config_file    = options.fetch(:config_file, DEFAULT_CONFIG_PATH)
+      @preloading     = options.fetch(:preloading, false)
 
       super
     end
@@ -68,7 +69,15 @@ module Guard
     # This method should be mainly used for "reload" (really!) actions like reloading passenger/spork/bundler/...
     # @raise [:task_has_failed] when reload has failed
     def reload
-      Process.kill "HUP", pid
+      # If the `preload_app` directive is false, then the workers will pick up
+      # any code changes using a `HUP` signal, but if the application is
+      # preloaded, then a `USR2 + QUIT` signal must be used.
+      #
+      # For now, let's rely on the fact that the user does know how to write
+      # a good unicorn configuration and he will have a block of code that
+      # will properly handle `USR2` signals.
+      signal = @preloading ? "USR2" : "HUP"
+      Process.kill signal, pid
 
       success "Unicorn reloaded"
     end
