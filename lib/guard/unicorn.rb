@@ -22,6 +22,7 @@ module Guard
       @pid_file       = options.fetch(:pid_file, DEFAULT_PID_PATH)
       @config_file    = options.fetch(:config_file, DEFAULT_CONFIG_PATH)
       @preloading     = options.fetch(:preloading, false)
+      @port           = options.fetch(:port, 8080)
 
       super
     end
@@ -36,6 +37,7 @@ module Guard
       cmd << "bundle exec" if @enable_bundler
       cmd << "unicorn_rails"
       cmd << "-c #{@config_file}"
+      cmd << "-p #{@port}"
       cmd << "-D" if @run_as_daemon 
 
       @pid = Process.fork do
