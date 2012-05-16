@@ -7,6 +7,7 @@ module Guard
     # Sensible defaults for Rails projects
     DEFAULT_PID_PATH    = File.join("tmp", "pids", "unicorn.pid")
     DEFAULT_CONFIG_PATH = File.join("config", "unicorn.rb")
+    DEFAULT_PORT        = 3000
 
     # Initialize a Guard.
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers
@@ -22,7 +23,7 @@ module Guard
       @pid_file       = options.fetch(:pid_file, DEFAULT_PID_PATH)
       @config_file    = options.fetch(:config_file, DEFAULT_CONFIG_PATH)
       @preloading     = options.fetch(:preloading, false)
-      @port           = options.fetch(:port, 8080)
+      @port           = options.fetch(:port, DEFAULT_PORT)
 
       super
     end
