@@ -42,8 +42,20 @@ to have graphical notifications.
 [notifu]: https://rubygems.org/gems/rb-notifu
 
 
-## Guardfile
+## Guardfile for guard-unicorn
 
 ```ruby
-guard :unicorn, :daemonized => true, :config_file => "config/unicorn.rb", :pid_file => "tmp/pids/unicorn.pid"
+guard :unicorn, :daemonized => true
 ```
+
+Available options:
+
+* `:daemonized` run the Unicorn server as a daemon. Can be `true` or `false`.
+  Defaults to `false`
+* `:bundler` use `bundle exec` to start Unicorn. Defaults to `true`.
+* `:config_file` path to the Unicorn config file. Defaults to
+  `config/unicorn.rb`
+* `:pid_file` path to the Unicorn PID file. Defaults to `tmp/pids/unicorn.pid`
+* `:preloading` is Unicorn configured to preload the application? Defaults to
+  `false`.
+* `:port` on what port to run Unicorn. Defaults to `3000`.
