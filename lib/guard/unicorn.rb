@@ -41,7 +41,7 @@ module Guard
       cmd << "-p #{@port}"
       cmd << "-D" if @run_as_daemon 
 
-      @pid = Process.fork do
+      @pid = ::Process.fork do
         system "#{cmd.join " "}"
       end
 
@@ -54,12 +54,12 @@ module Guard
       return unless pid
 
       begin
-        Process.kill("QUIT", pid) if Process.getpgid(pid)
+        ::Process.kill("QUIT", pid) if ::Process.getpgid(pid)
 
         # Unicorn won't always shut down right away, so we're waiting for
         # the getpgid method to raise an Errno::ESRCH that will tell us
         # the process is not longer active.
-        sleep 1 while Process.getpgid(pid)
+        sleep 1 while ::Process.getpgid(pid)
         success "Unicorn stopped."
       rescue Errno::ESRCH
         # Don't do anything, the process does not exist
@@ -78,7 +78,7 @@ module Guard
       # a good unicorn configuration and he will have a block of code that
       # will properly handle `USR2` signals.
       signal = @preloading ? "USR2" : "HUP"
-      Process.kill signal, pid
+      ::Process.kill signal, pid
 
       success "Unicorn reloaded"
     end
