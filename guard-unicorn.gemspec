@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "guard-unicorn"
-  s.version     = "0.0.6"
+  s.version     = "0.0.7"
   s.authors     = ["Andrei Maxim"]
   s.email       = ["andrei@andreimaxim.ro"]
   s.homepage    = "https://github.com/xhr/guard-unicorn"
