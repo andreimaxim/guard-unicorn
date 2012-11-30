@@ -8,6 +8,7 @@ module Guard
     DEFAULT_PID_PATH    = File.join("tmp", "pids", "unicorn.pid")
     DEFAULT_CONFIG_PATH = File.join("config", "unicorn.rb")
     DEFAULT_PORT        = 3000
+    DEFAULT_ENVIRONMENT = "development"
 
     # Initialize a Guard.
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers
@@ -24,6 +25,7 @@ module Guard
       @config_file    = options.fetch(:config_file, DEFAULT_CONFIG_PATH)
       @preloading     = options.fetch(:preloading, false)
       @port           = options.fetch(:port, DEFAULT_PORT)
+      @environment    = options.fetch(:environment, DEFAULT_ENVIRONMENT)
 
       super
     end
@@ -34,11 +36,12 @@ module Guard
       # Make sure unicorn is stopped
       stop
 
-      cmd = [] 
+      cmd = []
       cmd << "bundle exec" if @enable_bundler
       cmd << "unicorn_rails"
       cmd << "-c #{@config_file}"
       cmd << "-p #{@port}"
+      cmd << "-E #{@environment}"
       cmd << "-D" if @run_as_daemon 
 
       @pid = ::Process.fork do
