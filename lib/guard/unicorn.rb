@@ -8,7 +8,7 @@ module Guard
     DEFAULT_PID_PATH    = File.join("tmp", "pids", "unicorn.pid")
     DEFAULT_CONFIG_PATH = File.join("config", "unicorn.rb")
     DEFAULT_PORT        = 3000
-    DEFAULT_ENVIRONMENT = Rails.env.to_s
+    DEFAULT_ENVIRONMENT = "development"
 
     # Initialize a Guard.
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers
