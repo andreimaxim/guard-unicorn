@@ -26,6 +26,7 @@ module Guard
       @preloading     = options.fetch(:preloading, false)
       @port           = options.fetch(:port, DEFAULT_PORT)
       @environment    = options.fetch(:environment, DEFAULT_ENVIRONMENT)
+      @socket         = options.fetch(:socket, nil)
 
       super
     end
@@ -40,7 +41,8 @@ module Guard
       cmd << "bundle exec" if @enable_bundler
       cmd << "unicorn_rails"
       cmd << "-c #{@config_file}"
-      cmd << "-p #{@port}"
+      cmd << "-p #{@port}" unless @socket
+      cmd << "-l #{@socket}" if @socket
       cmd << "-E #{@environment}"
       cmd << "-D" if @run_as_daemon 
 
