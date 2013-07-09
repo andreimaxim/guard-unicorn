@@ -82,9 +82,17 @@ module Guard
       # For now, let's rely on the fact that the user does know how to write
       # a good unicorn configuration and he will have a block of code that
       # will properly handle `USR2` signals.
-      signal = @preloading ? "USR2" : "HUP"
-      ::Process.kill signal, pid
+      if @preloading
+        oldpid = pid
+        UI.debug "Sending USR2 to unicorn with pid #{oldpid}"
+        ::Process.kill 'USR2', oldpid
+        UI.debug "Sending QUIT to unicorn with pid #{oldpid}"
+        ::Process.kill 'QUIT', oldpid
+      else
+        ::Process.kill 'HUP', pid
+      end
 
+      UI.info "Done reloading unicorn."
       success "Unicorn reloaded"
     end
 
