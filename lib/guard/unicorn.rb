@@ -41,7 +41,7 @@ module Guard
       cmd << "bundle exec" if @enable_bundler
       cmd << "unicorn_rails"
       cmd << "-c #{@config_file}"
-      cmd << "-p #{@port}" unless @socket
+      cmd << "-p #{@port}" if @port
       cmd << "-l #{@socket}" if @socket
       cmd << "-E #{@environment}"
       cmd << "-D" if @run_as_daemon 
