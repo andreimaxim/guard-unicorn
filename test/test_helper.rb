@@ -9,5 +9,7 @@ rescue Bundler::BundlerError => e
 end
 
 require 'minitest/autorun'
+require 'coveralls'
+Coveralls.wear!
 
 require 'guard/unicorn'

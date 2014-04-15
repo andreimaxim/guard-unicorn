@@ -1,4 +1,13 @@
-# Guard::Unicorn [![Build Status](https://secure.travis-ci.org/andreimaxim/guard-unicorn.png)](http://travis-ci.org/#!/andreimaxim/guard-unicorn) [![Code Climate](https://codeclimate.com/github/andreimaxim/guard-unicorn.png)](https://codeclimate.com/github/andreimaxim/guard-unicorn)
+# Guard::Unicorn [![Build Status][bsi]][bsu] [![Code Climate][cci]][ccu] [![Coverage Status][csi]][csu]
+
+[bsi]: https://secure.travis-ci.org/andreimaxim/guard-unicorn.png 
+[bsu]: http://travis-ci.org/#!/andreimaxim/guard-unicorn
+
+[cci]: https://codeclimate.com/github/andreimaxim/guard-unicorn.png
+[ccu]: https://codeclimate.com/github/andreimaxim/guard-unicorn
+
+[csi]: https://coveralls.io/repos/andreimaxim/guard-unicorn/badge.png
+[csu]: https://coveralls.io/r/andreimaxim/guard-unicorn
 
 `Guard::Unicorn` automatically restarts the Unicorn server using [Guard] [gu].
 
