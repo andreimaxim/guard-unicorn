@@ -1,4 +1,4 @@
-# Guard::Unicorn [![Build Status](https://secure.travis-ci.org/xhr/guard-unicorn.png)](http://travis-ci.org/#!/xhr/guard-unicorn)
+# Guard::Unicorn [![Build Status](https://secure.travis-ci.org/andreimaxim/guard-unicorn.png)](http://travis-ci.org/#!/andreimaxim/guard-unicorn)
 
 `Guard::Unicorn` automatically restarts the Unicorn server using [Guard] [gu].
 
