@@ -1,4 +1,10 @@
-# Guard::Unicorn [![Build Status][bsi]][bsu] [![Code Climate][cci]][ccu] [![Coverage Status][csi]][csu]
+# Guard::Unicorn 
+
+[![Gem Version][gvi]][gvu] [![Build Status][bsi]][bsu] [![Code Climate][cci]][ccu] [![Coverage Status][csi]][csu]
+
+
+[gvi]: https://badge.fury.io/rb/guard-unicorn.svg
+[gvu]: http://badge.fury.io/rb/guard-unicorn
 
 [bsi]: https://secure.travis-ci.org/andreimaxim/guard-unicorn.png 
 [bsu]: http://travis-ci.org/#!/andreimaxim/guard-unicorn
