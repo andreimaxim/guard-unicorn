@@ -46,9 +46,7 @@ module Guard
       cmd << "-E #{@environment}"
       cmd << "-D" if @run_as_daemon 
 
-      @pid = ::Process.fork do
-        system "#{cmd.join " "}"
-      end
+      @pid = spawn "#{cmd.join " "}"
 
       success "Unicorn started."
     end
