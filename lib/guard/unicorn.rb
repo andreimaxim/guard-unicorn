@@ -1,8 +1,7 @@
 require 'guard'
-require 'guard/guard'
 
 module Guard
-  class Unicorn < Guard
+  class Unicorn < Plugin
 
     # Sensible defaults for Rails projects
     DEFAULT_PID_PATH    = File.join("tmp", "pids", "unicorn.pid")
@@ -11,12 +10,12 @@ module Guard
     DEFAULT_ENVIRONMENT = "development"
 
     # Initialize a Guard.
-    # @param [Array<Guard::Watcher>] watchers the Guard file watchers
     # @param [Hash] options the custom Guard options
-    def initialize(watchers = [], options = {})
-      if watchers.empty?
-        watchers << Watcher.new( /^app\/(controllers|models|helpers)\/.+\.rb$/ )
-        watchers << Watcher.new( /^lib\/.+\.rb$/ )
+    # @param Hash[:watchers] [<Guard::Watcher>] watchers the Guard file watchers
+    def initialize(options = {})
+      if options[:watchers].empty?
+        options[:watchers] << Watcher.new( /^app\/(controllers|models|helpers)\/.+\.rb$/ )
+        options[:watchers] << Watcher.new( /^lib\/.+\.rb$/ )
       end
 
       @run_as_daemon  = options.fetch(:daemonize, false)
