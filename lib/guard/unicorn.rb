@@ -8,6 +8,7 @@ module Guard
     DEFAULT_CONFIG_PATH = File.join("config", "unicorn.rb")
     DEFAULT_PORT        = 3000
     DEFAULT_ENVIRONMENT = "development"
+    DEFAULT_COMMAND = "unicorn_rails"
 
     # Initialize a Guard.
     # @param [Hash] options the custom Guard options
@@ -26,6 +27,7 @@ module Guard
       @port           = options.fetch(:port, DEFAULT_PORT)
       @environment    = options.fetch(:environment, DEFAULT_ENVIRONMENT)
       @socket         = options.fetch(:socket, nil)
+      @command        = options.fetch(:command, DEFAULT_COMMAND)
 
       super
     end
@@ -38,7 +40,7 @@ module Guard
 
       cmd = []
       cmd << "bundle exec" if @enable_bundler
-      cmd << "unicorn_rails"
+      cmd << @command
       cmd << "-c #{@config_file}"
       cmd << "-p #{@port}" if @port
       cmd << "-l #{@socket}" if @socket
