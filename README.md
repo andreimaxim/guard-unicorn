@@ -73,4 +73,5 @@ Available options:
 * `:pid_file` path to the Unicorn PID file. Defaults to `tmp/pids/unicorn.pid`
 * `:preloading` is Unicorn configured to preload the application? Defaults to
   `false`.
-* `:port` on what port to run Unicorn. Defaults to `3000`.
+* `:port` on what port to run Unicorn. Defaults to `8080`.
+* `:unicorn_rails` use `unicorn_rails` command instead of `unicorn`. [For ancient Rails versions.](http://unicorn.bogomips.org/README.html) Defaults to `false`.

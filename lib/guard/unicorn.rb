@@ -6,7 +6,7 @@ module Guard
     # Sensible defaults for Rails projects
     DEFAULT_PID_PATH    = File.join("tmp", "pids", "unicorn.pid")
     DEFAULT_CONFIG_PATH = File.join("config", "unicorn.rb")
-    DEFAULT_PORT        = 3000
+    DEFAULT_PORT        = 8080 # Unicorn defaults to 8080
     DEFAULT_ENVIRONMENT = "development"
 
     # Initialize a Guard.
@@ -26,6 +26,7 @@ module Guard
       @port           = options.fetch(:port, DEFAULT_PORT)
       @environment    = options.fetch(:environment, DEFAULT_ENVIRONMENT)
       @socket         = options.fetch(:socket, nil)
+      @unicorn_rails  = options.fetch(:unicorn_rails, false) 
 
       super
     end
@@ -38,7 +39,7 @@ module Guard
 
       cmd = []
       cmd << "bundle exec" if @enable_bundler
-      cmd << "unicorn_rails"
+      cmd << (@unicorn_rails ? 'unicorn_rails' : 'unicorn')
       cmd << "-c #{@config_file}"
       cmd << "-p #{@port}" if @port
       cmd << "-l #{@socket}" if @socket
